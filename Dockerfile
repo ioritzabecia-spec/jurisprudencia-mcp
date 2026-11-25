@@ -1,6 +1,6 @@
 # Servidor MCP de jurisprudencia (CENDOJ) y legislación (BOE) para Claude
 
-# Etapa 1: Node.js 22 + puente stdio -> HTTP (supergateway)
+# Etapa 1: Node.js 22 + pasarela HTTP (supergateway)
 FROM node:22-slim AS node
 RUN npm install -g supergateway@4
 
@@ -11,7 +11,7 @@ COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules/supergateway /usr/local/lib/node_modules/supergateway
 RUN ln -s /usr/local/lib/node_modules/supergateway/dist/index.js /usr/local/bin/supergateway \
     && chmod +x /usr/local/bin/supergateway \
-    && apt-get update && apt-get install -y --no-install-recommends git python3-venv \
+    && apt-get update && apt-get install -y --no-install-recommends git curl python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
 # Servidor del CENDOJ
@@ -21,12 +21,13 @@ RUN git clone --depth 1 https://github.com/ComputingVictor/MCP-CENDOJ.git /opt/c
 
 # Servidor del BOE, en un entorno aparte (usa una versión de la librería mcp distinta a la del CENDOJ)
 RUN python3 -m venv /opt/boe \
-    && /opt/boe/bin/pip install --no-cache-dir "mcp<2" git+https://github.com/ComputingVictor/MCP-BOE.git
+    && /opt/boe/bin/pip install --no-cache-dir "mcp<2" uvicorn git+https://github.com/ComputingVictor/MCP-BOE.git
 
-COPY servers.json /opt/servers.json
+COPY servers.json cendoj_http.py boe_http.py start.sh /opt/
+RUN chmod +x /opt/start.sh
 
 ENV CENDOJ_HEADLESS=true
 EXPOSE 7860
 
-# La clave secreta (variable MCP_API_KEY) forma parte de la dirección: solo quien la conozca puede usar el servidor
-CMD ["sh", "-c", "sed \"s|CLAVE_SECRETA|$MCP_API_KEY|g\" /opt/servers.json > /tmp/servers.json && supergateway --config /tmp/servers.json --port ${PORT:-7860} --healthEndpoint /healthz"]
+# La clave secreta (variable MCP_API_KEY) forma parte de la dirección
+CMD ["/opt/start.sh"]

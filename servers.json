@@ -1,15 +1,14 @@
 {
   "mcpServers": {
     "cendoj": {
-      "command": "python3",
-      "args": ["run.py", "mcp"],
-      "cwd": "/opt/cendoj",
+      "url": "http://127.0.0.1:8001/mcp",
+      "type": "http",
       "path": "/CLAVE_SECRETA/cendoj",
       "outputTransport": "streamableHttp"
     },
     "boe": {
-      "command": "/opt/boe/bin/mcp-boe",
-      "args": [],
+      "url": "http://127.0.0.1:8002/mcp",
+      "type": "http",
       "path": "/CLAVE_SECRETA/boe",
       "outputTransport": "streamableHttp"
     }
