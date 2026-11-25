@@ -16,14 +16,14 @@ RUN ln -s /usr/local/lib/node_modules/supergateway/dist/index.js /usr/local/bin/
 
 # Servidor del CENDOJ
 RUN git clone --depth 1 https://github.com/ComputingVictor/MCP-CENDOJ.git /opt/cendoj \
-    && pip install --no-cache-dir --break-system-packages -r /opt/cendoj/requirements.txt \
+    && pip install --no-cache-dir --break-system-packages -r /opt/cendoj/requirements.txt pymupdf \
     && python3 -m playwright install --with-deps chromium
 
 # Servidor del BOE, en un entorno aparte (usa una versión de la librería mcp distinta a la del CENDOJ)
 RUN python3 -m venv /opt/boe \
     && /opt/boe/bin/pip install --no-cache-dir "mcp<2" uvicorn git+https://github.com/ComputingVictor/MCP-BOE.git
 
-COPY servers.json cendoj_http.py boe_http.py start.sh /opt/
+COPY servers.json cendoj_http.py cendoj_patch.py boe_http.py start.sh /opt/
 RUN chmod +x /opt/start.sh
 
 ENV CENDOJ_HEADLESS=true
