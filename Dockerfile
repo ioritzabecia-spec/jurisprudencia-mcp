@@ -28,5 +28,5 @@ COPY servers.json /opt/servers.json
 ENV CENDOJ_HEADLESS=true
 EXPOSE 7860
 
-# La clave de acceso se toma de la variable secreta MCP_API_KEY
-CMD ["sh", "-c", "supergateway --config /opt/servers.json --port ${PORT:-7860} --apiKey \"$MCP_API_KEY\" --healthEndpoint /healthz"]
+# La clave secreta (variable MCP_API_KEY) forma parte de la dirección: solo quien la conozca puede usar el servidor
+CMD ["sh", "-c", "sed \"s|CLAVE_SECRETA|$MCP_API_KEY|g\" /opt/servers.json > /tmp/servers.json && supergateway --config /tmp/servers.json --port ${PORT:-7860} --healthEndpoint /healthz"]

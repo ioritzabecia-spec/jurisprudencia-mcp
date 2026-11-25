@@ -4,11 +4,13 @@
       "command": "python3",
       "args": ["run.py", "mcp"],
       "cwd": "/opt/cendoj",
+      "path": "/CLAVE_SECRETA/cendoj",
       "outputTransport": "streamableHttp"
     },
     "boe": {
       "command": "/opt/boe/bin/mcp-boe",
       "args": [],
+      "path": "/CLAVE_SECRETA/boe",
       "outputTransport": "streamableHttp"
     }
   }
