@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "cendoj": {
+      "command": "python3",
+      "args": ["run.py", "mcp"],
+      "cwd": "/opt/cendoj",
+      "outputTransport": "streamableHttp"
+    },
+    "boe": {
+      "command": "/opt/boe/bin/mcp-boe",
+      "args": [],
+      "outputTransport": "streamableHttp"
+    }
+  }
+}
